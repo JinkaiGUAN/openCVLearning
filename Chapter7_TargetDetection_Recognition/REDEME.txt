@@ -1,0 +1,1 @@
+In this short porject, we found a problem: If the size of the testing image is changed, some hyperparameters should be changed. Actually, this is true, but should be tackled. Since the sliding _window size should be changed when scaning the figure.

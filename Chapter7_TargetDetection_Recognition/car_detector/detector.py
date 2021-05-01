@@ -7,17 +7,27 @@
 @Date    ：29/04/2021 14:58 
 """
 import cv2
+import configparser
 import numpy as np
 
-data_path = './CarData/TrainImages'  # The path here is the relative path
+config_path = "E:\CV\openCV\pictureProcessBasis\openCVLearning\Chapter7_TargetDetection_Recognition\config.ini"
+conf = configparser.ConfigParser()  # create key-value management object
+conf.read(config_path, encoding='utf-8')
+
+# data_path = conf.items("Path")[0][1]
+# FEATURE_SAMPLES = int(conf.items("Sampling Data")[0][1])
+# TRAINING_SAMPLES = int(conf.items("Sampling Data")[1][1])
+
+
+# data_path = './CarData/TrainImages'  # The path here is the relative path
 # to the total main python file.
-FEATURE_SAMPLES = 100
-TRAINING_SAMPLES = 400
+# FEATURE_SAMPLES = 100
+# TRAINING_SAMPLES = 400
 
 
 def path(cls, i):
     """Return path"""
-    return "{:s}/{:s}{:d}.pgm".format(data_path, cls, i + 1)
+    return "{:s}/{:s}{:d}.pgm".format(conf.items("Path")[0][1], cls, i + 1)
 
 
 def getFlannMatcher():
@@ -76,7 +86,7 @@ def carDetector():
 
     # 2. Cluster
     print("Adding features/descriptors to the trainer.")
-    for i in range(FEATURE_SAMPLES):
+    for i in range(int(conf.items("Sampling Data")[0][1])):
         # try:
         bow_kmeans_trainer.add(descriptorSift(path(pos, i), extract, detect))
         bow_kmeans_trainer.add(descriptorSift(path(neg, i), extract, detect))
@@ -90,7 +100,7 @@ def carDetector():
     # 3. Obtain the histogram (i.e. training data) of each image.
     train_data, train_labels = [], []
     print("Adding to train data.")
-    for i in range(TRAINING_SAMPLES):
+    for i in range(int(conf.items("Sampling Data")[1][1])):
         try:
             train_data.extend(
                 bowFeatures(

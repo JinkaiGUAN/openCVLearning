@@ -13,11 +13,6 @@ from car_detector.detector import carDetector, bowFeatures
 from car_detector.pyramid import pyramid
 from car_detector.non_maximum import nomMaximumSuppressionFast as nms
 from car_detector.sliding_window import slidingWindow
-import urllib3
-
-
-def inRange(number, test, threshold=0.2):
-    return abs(number - test) < threshold
 
 
 # test_img_path = "./CarData/TestImages"
@@ -50,24 +45,24 @@ for resized in pyramid(img, scaleFactor):
             # print("Delete!")
             continue
 
-        # try:
-        descriptors = bowFeatures(img=roi, extractor_bow=extractor,
-                                  detector=detect)
-        _, result = svm.predict(descriptors)
-        a, res = svm.predict(descriptors,
-                             flags=cv2.ml.STAT_MODEL_RAW_OUTPUT | cv2.ml.STAT_MODEL_UPDATE_MODEL)
-        print("Class: {}, Score: {}, a: {}".format(result[0][0],
-                                                   res[0][0], res))
-        score = res[0][0]
-        scores.append(score)
-        if result[0][0] == 1:
-            if score < -0.35:
-                # all scores less than ths=is value will be treated as a good prediction.
-                rx, ry, rx2, ry2 = int(x * scale), int(y * scale), int(
-                    (x + w) * scale), int((y + h) * scale)
-                rectangles.append([rx, ry, rx2, ry2, abs(score)])
-        # except:
-        #     print("The prediction went wrong!")
+        try:
+            descriptors = bowFeatures(img=roi, extractor_bow=extractor,
+                                      detector=detect)
+            _, result = svm.predict(descriptors)
+            a, res = svm.predict(descriptors,
+                                 flags=cv2.ml.STAT_MODEL_RAW_OUTPUT | cv2.ml.STAT_MODEL_UPDATE_MODEL)
+            print("Class: {}, Score: {}, a: {}".format(result[0][0],
+                                                       res[0][0], res))
+            score = res[0][0]
+            scores.append(score)
+            if result[0][0] == 1:
+                if score < -0.35:
+                    # all scores less than ths=is value will be treated as a good prediction.
+                    rx, ry, rx2, ry2 = int(x * scale), int(y * scale), int(
+                        (x + w) * scale), int((y + h) * scale)
+                    rectangles.append([rx, ry, rx2, ry2, abs(score)])
+        except:
+            print("The prediction went wrong!")
 
         counter += 1
 
