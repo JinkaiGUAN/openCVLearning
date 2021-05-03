@@ -16,7 +16,7 @@ conf.read(filenames=conf_path, encoding='utf-8')
 # video_path = conf.items("Path")[0][1]
 
 # video_path = "./movie.mpg"
-video = cv2.VideoCapture(video_path = conf.items("Path")[0][1])
+video = cv2.VideoCapture(conf.items("Path")[0][1])
 bg_knn = cv2.createBackgroundSubtractorKNN(detectShadows=True)
 success, frame = video.read()
 fps = video.get(cv2.CAP_PROP_FPS)
